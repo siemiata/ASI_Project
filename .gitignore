@@ -1,0 +1,30 @@
+# Pliki systemowe
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.log
+
+# Wirtualne środowisko
+venv/
+.venv/
+env/
+ENV/
+*.egg-info/
+
+# IDE / PyCharm
+.idea/
+*.iml
+
+# Jupyter/Notebook
+.ipynb_checkpoints/
+
+# Modele, cache, tymczasowe wyniki
+data/06_models/
+models/
+.viz/
+*.pkl
+
+# Pozostałe
+.DS_Store
+*.zip

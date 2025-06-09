@@ -1,0 +1,21 @@
+raw_train:
+  type: kedro_datasets.pandas.csv_dataset.CSVDataset
+  filepath: data/01_raw/train.csv
+
+raw_test:
+  type: kedro_datasets.pandas.csv_dataset.CSVDataset
+  filepath: data/01_raw/test.csv
+
+clean_train:
+  type: kedro_datasets.pandas.parquet_dataset.ParquetDataset
+  filepath: data/02_intermediate/clean_train.parquet
+
+clean_test:
+  type: kedro_datasets.pandas.parquet_dataset.ParquetDataset
+  filepath: data/02_intermediate/clean_test.parquet
+
+predictions:
+  type: kedro_datasets.pandas.csv_dataset.CSVDataset
+  filepath: data/08_reporting/predictions.csv
+  save_args:
+    index: False
