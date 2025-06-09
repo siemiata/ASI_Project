@@ -2,7 +2,7 @@ name: Pipeline2 - Wypchnięcie obrazu na Azure
 
 on:
   workflow_run:
-    workflows: ["Pipeline1 - Budowanie i publikacja obrazu Docker"]  # ← Upewnij się, że nazwa się zgadza
+    workflows: ["Pipeline1 - Budowanie i publikacja obrazu Docker"] 
     types:
       - completed
 
