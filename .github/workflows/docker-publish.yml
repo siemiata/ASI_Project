@@ -3,7 +3,7 @@ name: Pipeline1 - Budowanie i publikacja obrazu Docker
 on:
   push:
     branches:
-      - main
+      - master
 
 jobs:
   build-and-push:
