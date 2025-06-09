@@ -1,9 +1,10 @@
 FROM python:3.10.11-slim
 
 # Instalacja systemowych zależności
-RUN apt-get update && apt-get install -y \
+RUN apt-get update && apt-get install -y --fix-missing \
     build-essential \
     tesseract-ocr \
+    && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
 # Ustawienie katalogu roboczego
