@@ -7,7 +7,7 @@ from azure.storage.blob import BlobServiceClient
 import os
 import uuid
 
-st.title("🧠 Credit Scoring – System oceny kredytowej")
+st.title("Credit Scoring – System oceny kredytowej")
 
 model_path = Path("models")
 
