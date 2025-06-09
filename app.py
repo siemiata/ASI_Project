@@ -3,13 +3,14 @@ import pandas as pd
 import subprocess
 from pathlib import Path
 from autogluon.tabular import TabularPredictor
+from azure.storage.blob import BlobServiceClient
+import os
+import uuid
 
 st.title("🧠 Credit Scoring – Formularz oceny kredytowej")
 
-# Ścieżka do folderu z modelem
 model_path = Path("models")
 
-# Jeśli model nie istnieje – uruchom kedro run
 if not model_path.exists() or not any(model_path.iterdir()):
     st.warning("⚠️ Model nie istnieje – uruchamiam `kedro run`...")
 
@@ -20,10 +21,8 @@ if not model_path.exists() or not any(model_path.iterdir()):
         st.error(f"❌ Błąd podczas trenowania przez Kedro:\n{e}")
         st.stop()
 
-# Wczytanie gotowego modelu
 model = TabularPredictor.load(str(model_path))
 
-# Mapowanie klas na etykiety
 score_labels = {0: "Poor", 1: "Standard", 2: "Good"}
 
 st.markdown("Wprowadź dane klienta:")
@@ -36,6 +35,27 @@ num_delayed = st.number_input("Liczba opóźnień w spłacie", min_value=0, valu
 outstanding_debt = st.number_input("Pozostały dług (PLN)", min_value=0.0, value=1000.0)
 amount_invested = st.number_input("Kwota inwestowana miesięcznie (PLN)", min_value=0.0, value=500.0)
 monthly_balance = st.number_input("Miesięczne saldo (PLN)", min_value=0.0, value=2000.0)
+
+def save_prediction_to_blob(input_df: pd.DataFrame, prediction_label: str):
+    try:
+        connect_str = os.getenv("AZURE_STORAGE_CONNECTION_STRING")
+        container_name = os.getenv("AZURE_STORAGE_CONTAINER_NAME")
+
+        if not connect_str or not container_name:
+            st.warning("⚠️ Brak konfiguracji Azure Storage – dane nie zostały zapisane.")
+            return
+
+        blob_service_client = BlobServiceClient.from_connection_string(connect_str)
+        container_client = blob_service_client.get_container_client(container_name)
+
+        input_df["Prediction"] = prediction_label
+        blob_name = f"predictions/prediction_{uuid.uuid4().hex}.csv"
+        blob_client = container_client.get_blob_client(blob_name)
+        blob_client.upload_blob(input_df.to_csv(index=False), overwrite=True)
+
+        st.info(f"🗃️ Zapisano dane do Azure Blob Storage jako `{blob_name}`.")
+    except Exception as e:
+        st.error(f"❌ Błąd przy zapisie do Azure Blob: {e}")
 
 if st.button("🔮 Przewiduj Credit Score"):
     input_df = pd.DataFrame([{
@@ -54,3 +74,5 @@ if st.button("🔮 Przewiduj Credit Score"):
     label = score_labels.get(predicted_class, "Nieznane")
 
     st.success(f"📊 Wynik modelu: {predicted_class} → {label}")
+
+    save_prediction_to_blob(input_df, label)
