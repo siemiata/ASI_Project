@@ -6,12 +6,12 @@ def create_pipeline(**kwargs) -> Pipeline:
         node(
             func=train_model,
             inputs="clean_train",
-            outputs=None,  # model jest zapisywany w folderze "models/" wewnątrz train_model
+            outputs=None, 
             name="train_model_node"
         ),
         node(
             func=predict_model,
-            inputs=["clean_test", "clean_train"],  # przekazujemy też dane treningowe
+            inputs=["clean_test", "clean_train"], 
             outputs="predictions",
             name="predict_model_node"
         ),
