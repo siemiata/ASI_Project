@@ -19,12 +19,12 @@ def predict_model(test_data: pd.DataFrame, train_data: pd.DataFrame) -> pd.DataF
     print(f"Dane wejściowe do predykcji: {test_data.shape}")
     model_path = Path("models")
 
-    # Jeśli model nie istnieje, trenuj
+    
     if not model_path.exists() or not any(model_path.iterdir()):
         print("Model nie istnieje – rozpoczynam trening...")
         train_model(train_data)
 
-    # Wczytaj model
+    
     model = TabularPredictor.load(str(model_path))
     predictions = model.predict(test_data)
     print(f"Liczba predykcji: {len(predictions)}")
