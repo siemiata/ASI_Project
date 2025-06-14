@@ -8,7 +8,6 @@ def clean_data(data: pd.DataFrame) -> pd.DataFrame:
         data.columns = data.columns[0].split(",")
         data = data.reset_index(drop=True)
 
-    # Kolumny wymagane do treningu lub predykcji
     keep_cols = [
         'Age',
         'Annual_Income',
